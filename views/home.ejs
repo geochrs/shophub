@@ -1,0 +1,46 @@
+<%- layout('layouts/boilerplate.ejs')%>
+<section id="header" class="text-dark-emphasis">
+    <h1 class="display-2">Playstation 5</h1>
+    <p class="lead">Powered by an eight-core AMD Zen 2 CPU and custom AMD Radeon GPU <br> supporting a 120Hz video
+        refresh,
+        the PS5 is considerably more powerful.</p>
+    <div class="d-flex gap-2">
+        <a href="products/652cff9f822c9d4da4346c24" class="btn btn-outline-secondary me-2">View product</a>
+        <form action="/cart" method="POST">
+            <button class="btn btn-secondary"><i class="bi bi-cart-fill"></i> Add
+                to cart</button>
+            <input type="hidden" name="productId" value="652cff9f822c9d4da4346c24">
+        </form>
+    </div>
+</section>
+<section>
+    <div class="container pt-4">
+        <h2 class="h2">New Arrivals</h2>
+    </div>
+    <div class="container pt-4">
+        <div class="row">
+            <% for (let product of products) { %>
+            <% if (product.featured) {%>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <a href="products/<%=product._id%>"><img class="card-img-top" src="<%= product.images[0].url %>"
+                            alt=""></a>
+                    <div class="card-body">
+                        <h4 class="h4 card-title"><%= product.title %></h4>
+                        <p class="card-text text-black-50"><%= product.description %></p>
+                        <div class="d-flex justify-content-between">
+                            <h4 class="h4 fw-medium"><%= product.price %>&euro;</h4>
+                            <form action="/cart" method="POST">
+                                <button class="btn btn-secondary"><i class="bi bi-cart-fill"></i> Add
+                                    to cart</button>
+                                <input type="hidden" name="productId" value="<%=product._id%>">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+            <% } %>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,13 @@
+/* #header {
+    background: url('/images/playstation5.jpg') 28% 35%;
+    padding: 5rem 3rem;
+} */
+
+#header {
+    background-image: url('/images/playstation5.jpg');
+    padding: 5rem 3rem;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}

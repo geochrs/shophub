@@ -1,0 +1,29 @@
+<%- layout('layouts/boilerplate') %>
+<div class="container pt-4 text-center">
+    <% if (products.length > 0) { %>
+    <% for (let product of products) { %>
+    <div class="card mb-3 mx-auto mt-2 shadow-sm" style="max-width: 640px;">
+        <div class="row g-2 mb-2">
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <img src="<%= product.productId.images[0].thumbnail%>" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <h5 class="card-text"><%= product.productId.title %></h5>
+            </div>
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <h5 class="card-text">Qty: <%= product.quantity %></h5>
+            </div>
+        </div>
+    </div>
+    <% } %>
+    <div class="d-flex justify-content-center mt-4 gap-5 align-items-center">
+        <h4 class="card-text mt-2 text-center fw-bold h4">Total: <%= totalSum %>&euro;</h4>
+        <form action="/checkout" method="POST">
+            <button id="order-btn" class="btn btn-secondary">Payment <i class="bi bi-arrow-right-short"></i>
+            </button>
+        </form>
+    </div>
+    <% } else { %>
+    <h2 class="h2 text-center mt-3">Add items to shopping cart first!</h2>
+    <% } %>
+</div>

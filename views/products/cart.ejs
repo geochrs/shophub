@@ -1,0 +1,33 @@
+<%- layout('layouts/boilerplate') %>
+<div class="container pt-4 text-center">
+    <% if (products.length > 0) { %>
+    <% for (let product of products) { %>
+    <div class="card mb-3 mx-auto mt-2 shadow-sm" style="max-width: 640px;">
+        <div class="row g-2 mb-2">
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <img src="<%= product.productId.images[0].thumbnail%>" class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <h5 class="card-text"><%= product.productId.title %></h5>
+            </div>
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <h5 class="card-text">Qty: <%= product.quantity %></h5>
+            </div>
+            <div class="col-md-2 d-flex align-items-center justify-content-center">
+                <form action="/cart-delete-item" method="POST">
+                    <input type="hidden" value="<%= product.productId._id %>" name="productId">
+                    <button class="btn btn-danger"><i class="bi bi-trash3"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% } %>
+    <div class="text-center mt-4">
+        <a class="btn btn-secondary mt-1" href="/checkout">Order Now <i class="bi bi-arrow-right-short"></i>
+        </a>
+    </div>
+    <% } else { %>
+    <h2 class="h2 text-center mt-3">Your shopping cart is empty!</h2>
+    <% } %>
+</div>

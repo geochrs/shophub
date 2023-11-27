@@ -1,0 +1,73 @@
+<%- layout('layouts/boilerplate') %>
+<div class="container mt-4">
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-4 col-md-6">
+            <% if (orders.length <= 0) { %>
+            <h2 class="h2 text-center mt-3">No Orders Yet!</h2>
+            <% } else { %>
+            <% orders.forEach(order => { %>
+            <div class="card text-center mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Order Id: # <%= order._id %></h5>
+                    <% order.products.forEach(p=> { %>
+                    <p class="card-text"><%= p.product.title %> ( <%= p.quantity %> )</p>
+                    <% }) %>
+                    <a href="/orders/<%=order._id%>" target="_blank" class="btn btn-secondary">Open Invoice</a>
+                </div>
+            </div>
+            <% }) %>
+            <% } %>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Account details</h4>
+                    <% if(currentUser) { %>
+                    <form action="/account?_method=PUT" method="POST" class="validated-form" novalidate>
+                        <div class="mb-3">
+                            <label class="form-label" for="username">Username</label>
+                            <input class="form-control" type="text" name="user[username]" id="username"
+                                value="<%= currentUser.username %>" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="email">Email</label>
+                            <input class="form-control" type="text" name="user[email]" id="email"
+                                value="<%= currentUser.email %>" disabled>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label" for="address">Address</label>
+                                <input type="text" class="form-control" name="user[address]" id="address"
+                                    value="<%= currentUser.address %>">
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="number">Number</label>
+                                <input type="number" class="form-control" name="user[number]" id="number"
+                                    value="<%= currentUser.number %>">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label" for="city">City</label>
+                                <input type="text" class="form-control" name="user[city]" id="city"
+                                    value="<%= currentUser.city %>">
+                            </div>
+                            <div class="col">
+                                <label class="form-label" for="zip">Zip</label>
+                                <input type="number" class="form-control" name="user[zip]" id="zip"
+                                    value="<%= currentUser.zip %>">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col d-grid">
+                                <button class="btn btn-secondary">Save</button>
+                            </div>
+                            <% } %>
+                    </form>
+                    <div class="col d-grid">
+                        <a href="/account/logout" class="btn btn-danger">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
