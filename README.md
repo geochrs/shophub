@@ -24,6 +24,7 @@ The application is built with:
 :radio_button: Express <br>
 :radio_button: Bootstrap <br>
 :radio_button: Stripe <br>
+:radio_button: Cloudinary <br>
 :radio_button: Passport
 
 ## Run it locally
