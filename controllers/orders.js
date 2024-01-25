@@ -17,75 +17,53 @@ module.exports.showCheckout = async (req, res) => {
     res.render('products/checkout', { products, totalSum: total, title: 'Checkout' });
 };
 
-module.exports.checkout = async (req, res, next) => {
-    let products;
+module.exports.checkout = async (req, res) => {
+    const user = await User.findById({ _id: req.user._id }).populate({
+        path: 'cart.items.productId'
+    });
+    const products = user.cart.items;
     let total = 0;
-    req.user
-        .populate({
-            path: 'cart.items.productId'
-        })
-        .then((user) => {
-            products = user.cart.items;
-            total = 0;
-            products.forEach((p) => {
-                total += p.quantity * p.productId.price;
-            });
-
-            return stripe.checkout.sessions.create({
-                line_items: products.map((p) => {
-                    return {
-                        price_data: {
-                            currency: 'usd',
-                            product_data: {
-                                name: p.productId.title
-                            },
-                            unit_amount: p.productId.price * 100,
-                        },
-                        quantity: p.quantity,
-                    }
-                }),
-                mode: 'payment',
-                success_url:
-                    req.protocol + "://" + req.get("host") + "/checkout/success",
-                cancel_url: req.protocol + "://" + req.get("host") + "/checkout",
-            })
-        })
-        .then((session) => {
-            res.redirect(303, session.url);
-        })
-        .catch((err) => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
-
+    products.forEach((p) => {
+        total += p.quantity * p.productId.price;
+    });
+    const session = await stripe.checkout.sessions.create({
+        line_items: products.map((p) => {
+            return {
+                price_data: {
+                    currency: 'eur',
+                    product_data: {
+                        name: p.productId.title
+                    },
+                    unit_amount: p.productId.price * 100,
+                },
+                quantity: p.quantity,
+            }
+        }),
+        mode: 'payment',
+        success_url:
+            req.protocol + "://" + req.get("host") + "/checkout/success",
+        cancel_url: req.protocol + "://" + req.get("host") + "/checkout",
+    });
+    res.redirect(303, session.url);
 };
 
-module.exports.checkoutSuccess = (req, res, next) => {
-    req.user
-        .populate("cart.items.productId")
-        .then((user) => {
-            const products = user.cart.items.map((i) => {
-                return { quantity: i.quantity, product: { ...i.productId._doc } };
-            });
-            const order = new Order({
-                user: {
-                    email: req.user.email,
-                    userId: req.user,
-                },
-                products: products,
-            });
-            return order.save();
-        })
-        .then((result) => {
-            return req.user.clearCart();
-        })
-        .then(() => res.redirect("/account"))
-        .catch((err) => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
+module.exports.checkoutSuccess = async (req, res) => {
+    const user = await User.findById({ _id: req.user._id }).populate({
+        path: 'cart.items.productId'
+    });
+    const products = user.cart.items.map((i) => {
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+    });
+    const order = new Order({
+        user: {
+            email: req.user.email,
+            userId: req.user,
+        },
+        products: products,
+    });
+    await order.save();
+    await user.clearCart();
+    res.redirect('/account');
 };
 
 module.exports.renderInvoice = (req, res, next) => {

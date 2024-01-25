@@ -17,11 +17,6 @@ const ProductSchema = new Schema({
     description: String,
     fullDetail: String,
     featured: Boolean,
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    }
 });
 
 const Product = mongoose.model('Product', ProductSchema);
